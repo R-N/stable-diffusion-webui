@@ -165,9 +165,9 @@ def get_vae_from_settings(vae_file="auto", verbose=True):
         vae_file = vae_dict.get(shared.opts.sd_vae, vae_auto_label)
         # if VAE selected but not found, fallback to auto
         if vae_file not in default_vae_values and not os.path.isfile(vae_file):
-            vae_file = vae_auto_label
             if verbose:
-                print("Selected VAE doesn't exist: ", vae_file)
+                print(f"Selected VAE doesn't exist: {vae_file}")
+            vae_file = vae_auto_label
     return vae_file
 
 
@@ -182,9 +182,9 @@ def resolve_vae(checkpoint_file=None, vae_file="auto", verbose=True, skip_select
     # if vae_file argument is provided, it takes priority, but not saved
     if vae_file and vae_file not in default_vae_list:
         if not os.path.isfile(vae_file):
-            vae_file = vae_auto_label
             if verbose:
-                print("VAE provided as function argument doesn't exist")
+                print(f"VAE provided as function argument doesn't exist: {vae_file}")
+            vae_file = vae_auto_label
     # for the first load, if vae-path is provided, it takes priority, saved, and failure is reported
     if first_load and shared.cmd_opts.vae_path is not None:
         if os.path.isfile(shared.cmd_opts.vae_path):
@@ -192,7 +192,7 @@ def resolve_vae(checkpoint_file=None, vae_file="auto", verbose=True, skip_select
             shared.opts.data['sd_vae'] = get_filename(vae_file)
         else:
             if verbose:
-                print("VAE provided as command line argument doesn't exist")
+                print(f"VAE provided as command line argument doesn't exist: {vae_file}")
     # fallback to selector in settings, if vae selector not set to act as default fallback
     if not shared.opts.sd_vae_as_default and not skip_selection:
         vae_file = get_vae_from_settings(vae_file, verbose=verbose)
@@ -201,7 +201,7 @@ def resolve_vae(checkpoint_file=None, vae_file="auto", verbose=True, skip_select
         if os.path.isfile(shared.cmd_opts.vae_path):
             vae_file = shared.cmd_opts.vae_path
             if verbose:
-                print("Using VAE provided as command line argument")
+                print(f"Using VAE provided as command line argument: {vae_file}")
     # if still not found, try look for VAE similar to model
     if vae_file in vae_auto_set and checkpoint_file:
         model_path = os.path.splitext(checkpoint_file)[0]
@@ -219,7 +219,7 @@ def resolve_vae(checkpoint_file=None, vae_file="auto", verbose=True, skip_select
             if os.path.isfile(vae_file_try):
                 vae_file = vae_file_try
                 if verbose:
-                    print("Using VAE found similar to selected model")
+                    print(f"Using VAE found similar to selected model: {vae_file}")
                 break
     # if vae selector were set as default fallback, call here
     if shared.opts.sd_vae_as_default and not skip_selection:
