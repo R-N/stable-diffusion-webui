@@ -270,6 +270,9 @@ def load_vae_dict(model, vae_dict_1):
     model.first_stage_model.load_state_dict(vae_dict_1)
     model.first_stage_model.to(devices.dtype_vae)
 
+def clear_loaded_vae():
+    global loaded_vae_file
+    loaded_vae_file = None
 
 def clear_loaded_vae():
     global loaded_vae_file
